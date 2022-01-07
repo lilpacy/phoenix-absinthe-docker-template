@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  phoenix:
+    build: .
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+    env_file:
+      - .dockerenv
+    volumes:
+      - .:/opt/app # for hot reload
+    command: bash -c "mix ecto.migrate && mix phx.server"
+    networks:
+      app_net:
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      app_net:
+
+volumes:
+  postgres:
+
+networks:
+  app_net:
